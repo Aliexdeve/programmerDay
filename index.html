@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0906">
+<title>جشنِ ۲۵۶ — دعوتِ روزِ برنامه‌نویس</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0906'/%3E%3Ctext x='32' y='43' font-family='monospace' font-size='27' font-weight='bold' fill='%23f2a93b' text-anchor='middle'%3E256%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0b0906; --panel:#131009; --panel2:#181408;
+  --line:#2b2415; --line-soft:#1f1a0f;
+  --text:#e6dcc3; --muted:#a89c7f;
+  --amber:#f2a93b; --amber-hi:#ffc86e; --amber-dim:#8a6a2a;
+  --green:#7dd97a; --red:#ff6f61;
+  --fa:'Vazirmatn',sans-serif; --mono:'JetBrains Mono',monospace;
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-t:env(safe-area-inset-top,0px);
+}
+html,body{height:100%;overscroll-behavior:none}
+body{background:var(--bg);color:var(--text);font-family:var(--fa);line-height:1.9;overflow:hidden;touch-action:manipulation}
+::selection{background:var(--amber);color:#171006}
+button{font-family:inherit;color:inherit}
+
+/* ---------- لایه‌های پس‌زمینه ---------- */
+#rain{position:fixed;inset:0;z-index:0;opacity:.6}
+.crt{position:fixed;inset:0;z-index:60;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.13) 0 1px,transparent 1px 3px)}
+.crt::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 42%,transparent 60%,rgba(4,2,0,.5))}
+.crt::after{content:'';position:absolute;inset:0;opacity:.05;mix-blend-mode:overlay;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E")}
+
+/* ---------- بوت ---------- */
+#boot{position:fixed;inset:0;z-index:90;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .6s ease}
+#boot.done{opacity:0;pointer-events:none}
+#boot pre{font-family:var(--mono);font-size:12px;color:var(--muted);line-height:2.1;width:min(86vw,420px);height:16em}
+#boot .ok{color:var(--green)}
+
+/* ---------- نوار بالا و پایین ---------- */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;justify-content:space-between;align-items:center;
+  padding:calc(var(--safe-t) + 12px) 16px 8px;pointer-events:none}
+#topbar>*{pointer-events:auto}
+.iconbtn{background:rgba(19,16,9,.75);border:1px solid var(--line);color:var(--muted);width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:color .2s,border-color .2s,opacity .3s}
+.iconbtn:active{color:var(--amber)}
+#backBtn{opacity:0;pointer-events:none}
+#backBtn.show{opacity:1;pointer-events:auto}
+#topL{display:flex;gap:10px;align-items:center}
+#stepNum{font-family:var(--mono);font-size:12px;color:var(--muted);background:rgba(19,16,9,.75);border:1px solid var(--line);padding:8px 12px;border-radius:9px}
+#sndBtn .off{display:none}
+#sndBtn.muted .on{display:none}
+#sndBtn.muted .off{display:block}
+
+#dots{position:fixed;bottom:calc(var(--safe-b) + 14px);left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:30}
+.dot{width:26px;height:26px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.dot::after{content:'';width:9px;height:9px;border-radius:50%;background:var(--line);transition:background .3s,transform .3s}
+.dot.seen::after{background:var(--amber-dim)}
+.dot.on::after{background:var(--amber);transform:scale(1.3)}
+
+#toast{position:fixed;bottom:calc(var(--safe-b) + 58px);left:50%;transform:translate(-50%,16px);z-index:80;background:var(--panel2);border:1px solid var(--line);border-inline-start:3px solid var(--green);padding:12px 20px;border-radius:9px;font-size:14.5px;opacity:0;pointer-events:none;transition:.35s cubic-bezier(.2,.9,.3,1.2);box-shadow:0 10px 30px rgba(0,0,0,.5);max-width:86vw;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- اسلایدها ---------- */
+#deck{position:fixed;inset:0;z-index:10;overflow:hidden}
+.slide{position:absolute;inset:0;display:flex;align-items:center;align-items:safe center;justify-content:center;
+  padding:calc(var(--safe-t) + 62px) 22px calc(var(--safe-b) + 70px);
+  opacity:0;pointer-events:none;transform:translateX(-36px);
+  transition:transform .55s cubic-bezier(.22,.9,.32,1),opacity .45s ease}
+.slide.from-right{transform:translateX(36px)}
+.slide.exit-right{transform:translateX(36px);opacity:0}
+.slide.exit-left{transform:translateX(-36px);opacity:0}
+.slide.active{transform:none;opacity:1;pointer-events:auto}
+.sin{width:100%;max-width:560px;max-height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:2px}
+.sin::-webkit-scrollbar{width:0}
+
+/* ---------- اجزای مشترک ---------- */
+[data-r]{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+[data-r].in{opacity:1;transform:none}
+.comment{font-family:var(--mono);color:var(--muted);font-size:clamp(12px,3.4vw,14px)}
+.big256{font-family:var(--mono);font-weight:800;font-size:clamp(86px,27vw,180px);line-height:1;color:var(--amber);letter-spacing:-.05em;user-select:none;margin:4px 0 2px;cursor:default}
+.big256.glitch{animation:gl .16s steps(2) 2}
+@keyframes gl{
+  0%{text-shadow:3px 0 var(--red),-3px 0 var(--green);transform:translateX(3px)}
+  50%{text-shadow:-3px 0 var(--red),3px 0 var(--green);transform:translateX(-3px)}
+  100%{text-shadow:none;transform:none}
+}
+.hero-fa{font-size:clamp(22px,6.4vw,38px);font-weight:800;margin-top:8px}
+.hero-sub{color:var(--muted);margin-top:12px;font-size:clamp(14px,4vw,16.5px);max-width:38ch}
+.cmd{font-family:var(--mono);font-size:clamp(12.5px,3.6vw,15px);color:var(--text);direction:ltr;text-align:right;margin-top:24px;min-height:1.6em}
+.cmd .d{color:var(--green)}
+.cur{display:inline-block;width:.62em;height:1.05em;background:var(--green);vertical-align:-.12em;margin-left:7px;animation:blink 1.05s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.swipe-hint{color:var(--muted);font-size:12.5px;margin-top:16px;opacity:.85}
+
+.eq{font-family:var(--mono);font-weight:800;font-size:clamp(34px,10vw,64px);color:var(--text);direction:ltr;text-align:right;margin:10px 0 6px}
+.eq b{color:var(--amber)}
+.why-line{font-size:clamp(15px,4.4vw,18px)}
+.why-line.dim{color:var(--muted)}
+
+.time-h{font-size:clamp(24px,7vw,40px);font-weight:800;margin:6px 0 4px}
+
+/* شمارش معکوس */
+.count{margin-top:22px}
+.count-label{display:block;color:var(--muted);font-size:14px;margin-bottom:4px}
+.cd{direction:ltr;text-align:right;font-family:var(--mono);font-weight:700;font-size:clamp(46px,15vw,86px);line-height:1.15}
+.cd .t{color:var(--muted);font-weight:400;font-size:.4em;vertical-align:.32em;margin-right:12px}
+.cd .dsep{color:var(--amber-dim)}
+.cd .dg{display:inline-block;min-width:1ch}
+.cd .dg.s{color:var(--amber)}
+.cd .dg.tick{animation:dtick .32s ease}
+@keyframes dtick{from{transform:translateY(.3em);opacity:0;filter:blur(2px)}}
+.cd.urgent .dg{color:var(--red)}
+.cd.urgent{animation:cdp 1s infinite}
+@keyframes cdp{50%{opacity:.55}}
+
+/* دکمه‌ها */
+.go{position:relative;overflow:hidden;margin-top:28px;font-weight:700;font-size:15.5px;color:var(--amber);background:rgba(19,16,9,.65);border:1px solid var(--amber-dim);border-radius:999px;padding:13px 36px;min-height:50px;cursor:pointer;transition:background .15s,color .15s}
+.go:active{background:var(--amber);color:#171006}
+.go .fill{position:absolute;inset-inline-start:0;bottom:0;height:2px;width:0;background:var(--amber-dim)}
+.go.armed .fill{animation:fillx var(--d,5s) linear forwards}
+@keyframes fillx{to{width:100%}}
+.btn{font-weight:800;font-size:17px;color:var(--amber);background:var(--panel);border:1px solid var(--amber-dim);border-radius:13px;padding:14px 26px;min-height:54px;cursor:pointer;box-shadow:0 4px 0 #3a2c10;display:inline-flex;align-items:center;justify-content:center;gap:10px;transition:transform .1s,box-shadow .1s,background .15s,color .15s;width:100%}
+.btn:active{transform:translateY(4px);box-shadow:0 0 0 #6b4d12}
+.btn svg{flex:none}
+.linknext{background:none;border:none;color:var(--muted);font-size:13.5px;text-decoration:underline dotted;cursor:pointer;margin-top:20px;padding:8px}
+
+/* ردیف‌های مشخصات */
+.krow{display:flex;gap:14px;align-items:baseline;padding:12px 2px;border-bottom:1px dashed var(--line-soft)}
+.krow .k{font-family:var(--mono);color:var(--amber);min-width:5ch;direction:ltr;font-size:14px}
+.krow .v{flex:1;font-size:clamp(14px,4vw,15.5px)}
+.krow.hot{border:1px dashed var(--amber-dim);background:rgba(242,169,59,.07);border-radius:12px;margin-top:14px;padding:14px 12px}
+.krow.hot .k{color:var(--amber-hi)}
+.plink{color:var(--amber-hi);text-decoration:underline dotted;text-underline-offset:4px}
+
+/* RSVP */
+.rsvp-form{display:flex;flex-direction:column;gap:14px;max-width:360px;margin:26px auto 0}
+.rsvp-form input{background:transparent;border:none;border-bottom:2px solid var(--amber-dim);color:var(--text);font-family:var(--fa);font-size:17px;padding:11px 4px;outline:none;transition:border-color .2s;border-radius:0}
+.rsvp-form input:focus{border-color:var(--amber)}
+.rsvp-form input.err{border-color:var(--red)}
+.done{display:flex;gap:10px;align-items:center;color:var(--green);font-weight:800;font-size:16.5px;max-width:360px;margin:26px auto 0}
+.done svg{flex:none}
+.done.vip{color:var(--amber-hi)}
+
+/* ترمینال */
+.tbox{background:rgba(19,16,9,.92);border:1px solid var(--line);border-radius:13px;overflow:hidden;margin-top:16px}
+.tbar{display:flex;align-items:center;gap:7px;padding:10px 14px;border-bottom:1px solid var(--line-soft);background:var(--panel2)}
+.tdot{width:10px;height:10px;border-radius:50%;flex:none}
+.tdot.r{background:#e0654f}.tdot.y{background:#d7a13f}.tdot.g{background:#6fae5c}
+.ttitle{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.term-out{height:min(30vh,220px);overflow-y:auto;padding:13px 14px;font-family:var(--mono);font-size:12.5px;line-height:1.95;direction:ltr;text-align:left;color:var(--text);cursor:text;overscroll-behavior:contain}
+.tline{white-space:pre-wrap;word-break:break-word;animation:tin .25s ease}
+@keyframes tin{from{opacity:0}}
+.tline.fa{direction:rtl;text-align:right;font-family:var(--fa);font-size:13.5px}
+.tline.cmd .p,.p{color:var(--green)}
+.tline .ok{color:var(--green)}
+.tline .err{color:var(--red)}
+.tline.hl{display:flex;justify-content:space-between;gap:16px}
+.tline.hl .c{color:var(--amber)}
+.tline.hl .d{color:var(--muted);font-family:var(--fa);font-size:12.5px;direction:rtl}
+.term-in{display:flex;gap:8px;align-items:center;padding:10px 14px;border-top:1px solid var(--line-soft);font-family:var(--mono);font-size:16px}
+.term-in input{flex:1;background:none;border:none;outline:none;color:var(--text);font:inherit;caret-color:var(--green);min-width:30px}
+.term-in .mini{background:var(--panel2);border:1px solid var(--line);color:var(--amber);border-radius:8px;padding:8px 14px;font-family:var(--fa);font-size:13.5px;cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.chip{font-family:var(--mono);font-size:13px;color:var(--amber);background:var(--panel);border:1px solid var(--amber-dim);border-radius:999px;padding:12px 18px;min-height:48px;display:inline-flex;align-items:center;cursor:pointer;transition:background .15s,color .15s}
+.chip:active{background:var(--amber);color:#171006}
+.chip.alt{font-family:var(--fa)}
+.share{margin-top:20px;max-width:360px;margin-inline:auto}
+.foot{color:var(--muted);font-size:12.5px;margin-top:18px;text-align:center}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s !important;transition-duration:.001s !important}
+}
+</style>
+</head>
+<body>
+
+<canvas id="rain"></canvas>
+<div class="crt"></div>
+
+<!-- بوت اولیه -->
+<div id="boot"><pre id="bootlog"></pre></div>
+
+<!-- نوار بالا -->
+<header id="topbar">
+  <button class="iconbtn" id="backBtn" aria-label="مرحله قبل">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+  </button>
+  <div id="topL">
+    <span id="stepNum" dir="ltr">01 / 06</span>
+    <button class="iconbtn" id="sndBtn" aria-label="صدا">
+      <svg class="on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+      <svg class="off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- اسلایدها -->
+<div id="deck">
+
+  <!-- ۱: هیرو -->
+  <section class="slide" data-auto="6200">
+    <div class="sin">
+      <p class="comment" data-r>// ۲۵۶اُمین روزِ سال — چون ۲ به توانِ ۸ می‌شه ۲۵۶</p>
+      <h1 class="big256" id="big">256</h1>
+      <p class="hero-fa" data-r>جمعِ ۱۲شبی‌ها</p>
+      <p class="hero-sub" data-r>تمامِ سال به ماشین‌ها یاد دادیم چی بسازن؛<br>امشب ساعت ۲۴:۰۰، نوبتِ خودمونه.</p>
+      <pre class="cmd" data-r dir="ltr"><span class="d">$</span> <span id="cmdTxt"></span><span class="cur"></span></pre>
+      <button class="go" data-gonext data-r><span class="lbl">شروع</span><span class="fill"></span></button>
+      <p class="swipe-hint" data-r>بکش یا بزن — خودم می‌برمت جلو</p>
+    </div>
+  </section>
+
+  <!-- ۲: چرا ۲۵۶؟ -->
+  <section class="slide" data-auto="6500">
+    <div class="sin">
+      <p class="comment" data-r>// چرا ۲۵۶؟</p>
+      <p class="eq" data-r dir="ltr">2^8 = <b id="eq256">256</b></p>
+      <p class="why-line" data-r>یک بایت، ۲۵۶ حالت داره؛</p>
+      <p class="why-line" data-r>و ما با همین بایت‌ها دنیا رو ساختیم.</p>
+      <p class="why-line dim" data-r>برای همینه که روزِ برنامه‌نویس، ۲۵۶اُمین روزِ ساله.</p>
+      <button class="go" data-gonext data-r><span class="lbl">بعدی</span><span class="fill"></span></button>
+    </div>
+  </section>
+
+  <!-- ۳: شمارش معکوس -->
+  <section class="slide">
+    <div class="sin">
+      <p class="comment" data-r>// وقتِ شروع</p>
+      <h2 class="time-h" data-r>امشب، ساعت ۲۴:۰۰</h2>
+      <div class="count" data-r>
+        <span class="count-label" id="cdLabel">تا شروعِ جشن</span>
+        <div class="cd" id="cd" dir="ltr"><span class="t">T-</span><span class="dg">0</span><span class="dg">0</span><span class="dsep">:</span><span class="dg">0</span><span class="dg">0</span><span class="dsep">:</span><span class="dg s">0</span><span class="dg s">0</span></div>
+      </div>
+      <button class="go" data-gonext data-r><span class="lbl">ادامه</span><span class="fill"></span></button>
+    </div>
+  </section>
+
+  <!-- ۴: مشخصات -->
+  <section class="slide" data-auto="8200">
+    <div class="sin">
+      <p class="comment" data-r>// مشخصاتِ پرونده</p>
+      <div class="krow" data-r><span class="k">time</span><span class="v" data-cfg="time"></span></div>
+      <div class="krow" data-r><span class="k">place</span><span class="v" data-cfg="place"></span></div>
+      <div class="krow" data-r><span class="k">menu</span><span class="v" data-cfg="menu"></span></div>
+      <div class="krow" data-r><span class="k">plan</span><span class="v">کُدگُلف، مناظره‌ی vim و emacs، جایزه‌ی «بهانه‌ی سال»</span></div>
+      <div class="krow" data-r><span class="k">dress</span><span class="v">هرچی راحت — فقط بدونِ merge conflict</span></div>
+      <div class="krow hot" data-r><span class="k">entry</span><span class="v" data-cfg="entry"></span></div>
+      <button class="go" data-gonext data-r><span class="lbl">بعدی</span><span class="fill"></span></button>
+    </div>
+  </section>
+
+  <!-- ۵: ثبت حضور -->
+  <section class="slide">
+    <div class="sin" style="text-align:center">
+      <p class="comment" data-r>// حضور</p>
+      <h2 class="time-h" data-r>میای؟</h2>
+      <p class="hero-sub" data-r style="margin-inline:auto">اسمت رو بنویس تا رزروت کنیم — فمبوی با حسابِ ما.<br>اگه اسمت ممد یا لوکی یا کیاست… خب، قوانین قوانینه.</p>
+      <div id="rsvpBox" data-r>
+        <form class="rsvp-form" id="rsvpForm">
+          <input id="rsvpName" placeholder="اسمت چیه؟" maxlength="24" autocomplete="off">
+          <button class="btn" type="submit">ثبتِ حضور</button>
+        </form>
+      </div>
+      <button class="linknext" data-gonext>فعلاً نمی‌دونم — بذار بقیه رو ببینم</button>
+    </div>
+  </section>
+
+  <!-- ۶: ترمینال و اشتراک -->
+  <section class="slide">
+    <div class="sin">
+      <p class="comment" data-r>// آخرین قدم — بازی کن و بفرست</p>
+      <h2 class="time-h" data-r>ترمینالِ جشن</h2>
+      <div class="tbox" data-r>
+        <div class="tbar">
+          <span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span>
+          <span class="ttitle">guest@256: ~/party — bash</span>
+        </div>
+        <div class="term-out" id="tbody"></div>
+        <div class="term-in" id="termRow" hidden>
+          <span class="p" dir="ltr">guest@256:~$</span>
+          <input id="cmdInput" autocomplete="off" spellcheck="false" placeholder="type…">
+          <button class="mini" id="runBtn">اجرا</button>
+        </div>
+      </div>
+      <div class="chips" data-r id="chips"></div>
+      <button class="btn share" id="shareBtn" data-r>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        دعوت‌نامه رو بفرست
+      </button>
+      <p class="foot" data-r>ساخته‌شده با ۰ باگِ شناخته‌شده — هرچی می‌بینی، فیچره.</p>
+    </div>
+  </section>
+
+</div>
+
+<nav id="dots" aria-label="مراحل"></nav>
+<div id="toast"></div>
+
+<script>
+/* =========================================================
+   ⚙️ تنظیمات — فقط این بخش رو عوض کن
+========================================================= */
+const CONFIG = {
+  time:      'امشب، ساعت ۲۴:۰۰ — وقتی ساعت، روز رو ریست می‌کنه',
+  place:     'گروهِ ترجمه‌ی «سوم تک مانهوا»',
+  placeLink: '',   // ← لینکِ دعوتِ گروه رو اینجا بذار تا مکان، توی صفحه تبدیل به لینک بشه (اختیاری)
+  menu:      'فمبویِ داغ، نوشابه، و قهوه‌ی بی‌نهایت',
+  entryFee:  '۵ میل',
+  payers:    ['ممد','لوکی','کیا'],   // ← اسمِ اونایی که ورودی می‌دن
+  shareText: 'امشب ساعت ۲۴:۰۰، جشنِ روزِ برنامه‌نویس (۲۵۶!) — فمبوی با حسابِ ما. بیا:',
+  shareTitle:'جشنِ ۲۵۶ — دعوتِ روزِ برنامه‌نویس'
+};
+CONFIG.entry = 'رایگان برای همه — به‌جز ' + CONFIG.payers.join('، ') + ': اونا ' + CONFIG.entryFee + ' می‌دن!';
+
+/* ================= ابزار ================= */
+const $  = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esc = s => s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const KEY = 'rsvp256';
+const savedName = () => { try{ return localStorage.getItem(KEY); }catch(e){ return null; } };
+const isPayer = n => CONFIG.payers.some(p => p.toLowerCase() === n.trim().toLowerCase());
+
+ $$('[data-cfg]').forEach(el => {
+  const key = el.dataset.cfg;
+  const val = CONFIG[key];
+  if(key === 'place' && CONFIG.placeLink){
+    const a = document.createElement('a');
+    a.href = CONFIG.placeLink; a.target = '_blank'; a.rel = 'noopener';
+    a.className = 'plink'; a.textContent = val;
+    el.appendChild(a);
+  }else{
+    el.textContent = val || '';
+  }
+});
+
+/* ================= صدا ================= */
+const Snd = {
+  on: (function(){ try{ return localStorage.getItem('snd256') !== 'off'; }catch(e){ return true; } })(),
+  ctx: null,
+  init(){ if(!this.ctx){ try{ this.ctx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){} }
+          if(this.ctx && this.ctx.state === 'suspended') this.ctx.resume(); },
+  play(f, dur=.07, type='square', vol=.05, when=0){
+    if(!this.on || !this.ctx) return;
+    const t = this.ctx.currentTime + when;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g).connect(this.ctx.destination);
+    o.start(t); o.stop(t + dur + .02);
+  },
+  beep(f=880){ this.play(f, .06, 'square', .045); },
+  chime(){ this.play(523,.09,'triangle',.06); this.play(784,.12,'triangle',.06,.09); this.play(1047,.2,'triangle',.05,.18); },
+  arp(){ [392,523,659,784].forEach((f,i)=> this.play(f,.12,'square',.05,i*.09)); },
+  cash(){ this.play(988,.08,'square',.06); this.play(1319,.1,'square',.06,.09); this.play(988,.06,'square',.05,.19); this.play(1319,.16,'square',.06,.26); }
+};
+document.addEventListener('pointerdown', () => Snd.init(), {once:true});
+
+const sndBtn = $('#sndBtn');
+sndBtn.classList.toggle('muted', !Snd.on);
+sndBtn.addEventListener('click', () => {
+  Snd.on = !Snd.on;
+  try{ localStorage.setItem('snd256', Snd.on ? 'on' : 'off'); }catch(e){}
+  sndBtn.classList.toggle('muted', !Snd.on);
+  if(Snd.on){ Snd.init(); Snd.beep(1046); }
+  toast(Snd.on ? 'صدا روشن شد' : 'صدا خاموش شد');
+});
+
+/* ================= توست ================= */
+let toastT;
+function toast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ================= بارون کد ================= */
+const cv = $('#rain'), cx = cv.getContext('2d');
+const GLYPHS = '{}()[]<>=/+*;:#$_&|!?01';
+const PCOLS  = ['#ffc86e','#f2a93b','#7dd97a','#e6dcc3'];
+const FS = innerWidth < 640 ? 16 : 18;
+let W, H, drops = [], particles = [], partyUntil = 0, raf = 0;
+let mx = -1e4, my = -1e4;
+const dpr = Math.min(devicePixelRatio || 1, 2);
+
+addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; });
+const newDrop = rand => ({ y: rand ? Math.random()*H/FS : 0, sp:.35+Math.random()*.75, br:.3+Math.random()*.5 });
+function sizeRain(){
+  W = innerWidth; H = innerHeight;
+  cv.width = W*dpr; cv.height = H*dpr;
+  cv.style.width = W+'px'; cv.style.height = H+'px';
+  cx.setTransform(dpr,0,0,dpr,0,0);
+  const n = Math.ceil(W/FS);
+  while(drops.length < n) drops.push(newDrop(true));
+  drops.length = n;
+}
+let rszT; addEventListener('resize', () => { clearTimeout(rszT); rszT = setTimeout(sizeRain, 200); });
+sizeRain();
+
+function partyFor(ms){ partyUntil = performance.now() + ms; }
+function burstAt(x, y, n){
+  if(RM) return;
+  n = n || (innerWidth < 640 ? 55 : 95);
+  for(let i = 0; i < n; i++){
+    particles.push({ x, y, vx:(Math.random()-.5)*10, vy:-(2+Math.random()*7.5), g:.22,
+      ch:GLYPHS[(Math.random()*GLYPHS.length)|0], col:PCOLS[(Math.random()*PCOLS.length)|0],
+      life:55+Math.random()*45, max:100 });
+  }
+}
+function frame(t){
+  const party = t < partyUntil;
+  cx.fillStyle = 'rgba(11,9,6,' + (party ? .22 : .12) + ')';
+  cx.fillRect(0,0,W,H);
+  cx.font = FS + 'px "JetBrains Mono", monospace';
+  for(let i = 0; i < drops.length; i++){
+    const d = drops[i];
+    if(Math.random() < (party ? .55 : .3)) d.y += d.sp * (party ? 2.6 : 1);
+    if(d.y*FS > H && Math.random() > (party ? .82 : .965)){ drops[i] = newDrop(false); continue; }
+    const x = i*FS+2, y = d.y*FS;
+    if(y > 0 && y < H+FS){
+      const near = Math.hypot(x-mx, y-my) < 130;
+      cx.fillStyle = near
+        ? 'rgba(255,214,140,'+Math.min(d.br*1.6+.35,1)+')'
+        : 'rgba(205,145,58,'+Math.min(d.br*(party?1.35:1), .8)+')';
+      cx.fillText(GLYPHS[(Math.random()*GLYPHS.length)|0], x, y);
+    }
+  }
+  for(let i = particles.length-1; i >= 0; i--){
+    const p = particles[i];
+    p.vy += p.g; p.x += p.vx; p.y += p.vy; p.life--;
+    if(p.life <= 0 || p.y > H+30){ particles.splice(i,1); continue; }
+    cx.globalAlpha = Math.min(p.life/55, 1);
+    cx.fillStyle = p.col;
+    cx.fillText(p.ch, p.x, p.y);
+    cx.globalAlpha = 1;
+  }
+  raf = requestAnimationFrame(frame);
+}
+if(RM){
+  cx.font = FS + 'px "JetBrains Mono", monospace';
+  for(let i = 0; i < drops.length; i++)
+    for(let k = 0; k < 6; k++){
+      cx.fillStyle = 'rgba(205,145,58,'+(.05+Math.random()*.12)+')';
+      cx.fillText(GLYPHS[(Math.random()*GLYPHS.length)|0], i*FS+2, Math.random()*H);
+    }
+}else{
+  raf = requestAnimationFrame(frame);
+}
+document.addEventListener('visibilitychange', () => {
+  if(RM) return;
+  if(document.hidden){ cancelAnimationFrame(raf); }
+  else{ raf = requestAnimationFrame(frame); }
+});
+
+/* ================= افکت متن ================= */
+function scramble(el, final, dur){
+  dur = dur || 1100;
+  if(RM){ el.textContent = final; return; }
+  const pool = '{}<>=/*#$&01';
+  const st = performance.now();
+  (function f(t){
+    const p = Math.min((t-st)/dur, 1);
+    let s = '';
+    for(let i = 0; i < final.length; i++)
+      s += (i/final.length) < p ? final[i] : pool[(Math.random()*pool.length)|0];
+    el.textContent = s;
+    if(p < 1) requestAnimationFrame(f); else el.textContent = final;
+  })(st);
+}
+function typeInto(el, text, cps){
+  cps = cps || 46;
+  return new Promise(res => {
+    if(RM){ el.textContent = text; res(); return; }
+    let i = 0;
+    (function step(){
+      el.textContent = text.slice(0, ++i);
+      if(i < text.length) setTimeout(step, cps); else res();
+    })();
+  });
+}
+
+/* ================= بوت ================= */
+const BOOT = [
+  'BOOT 256-partyOS v0.256 on tty1',
+  '[ ok ] loading party.ko',
+  '[ ok ] mounting /dev/fun',
+  '[ ok ] frying fombae ...',
+  '[ ok ] brewing coffee ...',
+  '[ ok ] cash register \u2192 ready for VIPs',
+  '[ ok ] clock synced \u2192 24:00',
+  '',
+  'hello, programmer.'
+];
+let booted = false;
+function finishBoot(){
+  if(booted) return;
+  booted = true;
+  const b = $('#boot');
+  b.classList.add('done');
+  setTimeout(() => b.remove(), 700);
+  startDeck();
+}
+(function(){
+  if(RM){ finishBoot(); return; }
+  BOOT.forEach((l,i) => setTimeout(() => {
+    const d = document.createElement('div');
+    d.innerHTML = l ? esc(l).replace('[ ok ]','<span class="ok">[ ok ]</span>') : '&nbsp;';
+    $('#bootlog').appendChild(d);
+  }, 80 + i*180));
+  setTimeout(finishBoot, 80 + BOOT.length*180 + 600);
+  $('#boot').addEventListener('click', finishBoot);
+})();
+
+/* ================= اسلایدها ================= */
+const slides = $$('.slide');
+const dotsWrap = $('#dots');
+let cur = -1, maxSeen = 0, autoT = 0;
+
+slides.forEach((s,i) => {
+  const b = document.createElement('button');
+  b.className = 'dot';
+  b.setAttribute('aria-label','مرحله ' + (i+1));
+  b.addEventListener('click', () => { Snd.beep(700); goTo(i); });
+  dotsWrap.appendChild(b);
+});
+const dots = $$('.dot');
+
+function updateChrome(){
+  dots.forEach((d,i) => {
+    d.classList.toggle('on', i === cur);
+    d.classList.toggle('seen', i <= maxSeen);
+  });
+  $('#stepNum').textContent = String(cur+1).padStart(2,'0') + ' / ' + String(slides.length).padStart(2,'0');
+  $('#backBtn').classList.toggle('show', cur > 0);
+}
+function disarmAutos(){
+  clearTimeout(autoT);
+  $$('.go.armed').forEach(b => b.classList.remove('armed'));
+}
+function armAuto(slide){
+  const ms = +slide.dataset.auto || 0;
+  if(!ms) return;
+  const btn = slide.querySelector('.go');
+  if(btn){ btn.style.setProperty('--d', ms+'ms'); btn.classList.add('armed'); }
+  autoT = setTimeout(() => goTo(cur+1), ms);
+}
+function reveal(slide){
+  const rs = slide.querySelectorAll('[data-r]');
+  rs.forEach(r => r.classList.remove('in'));
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    rs.forEach((r,k) => setTimeout(() => r.classList.add('in'), 110 + k*130));
+  }));
+}
+const hooks = [
+  () => { scramble($('#big'), '256', 1200);
+          setTimeout(() => typeInto($('#cmdTxt'), './tonight --at 24:00 --fombae yes'), 900); },
+  () => { scramble($('#eq256'), '256', 1000); },
+  null,
+  null,
+  () => { if(savedName()) showDone(savedName(), isPayer(savedName())); },
+  () => { if(!termWelcomed){ termWelcomed = true; termWelcome(); } }
+];
+function goTo(n){
+  if(n < 0 || n >= slides.length || n === cur) return;
+  disarmAutos();
+  const dir = n > cur ? 'next' : 'prev';
+  const curEl = cur >= 0 ? slides[cur] : null;
+  const nextEl = slides[n];
+  if(curEl){
+    curEl.classList.remove('active');
+    curEl.classList.add(dir === 'next' ? 'exit-right' : 'exit-left');
+    setTimeout(() => curEl.classList.remove('exit-right','exit-left'), 650);
+  }
+  nextEl.classList.remove('exit-right','exit-left');
+  nextEl.classList.add(dir === 'next' ? 'from-left' : 'from-right');
+  void nextEl.offsetWidth;
+  nextEl.classList.add('active');
+  nextEl.classList.remove('from-left','from-right');
+  cur = n;
+  maxSeen = Math.max(maxSeen, n);
+  updateChrome();
+  reveal(nextEl);
+  if(hooks[n]) hooks[n]();
+  armAuto(nextEl);
+}
+function startDeck(){ goTo(0); }
+
+ $('#backBtn').addEventListener('click', () => { Snd.beep(640); goTo(cur-1); });
+ $$('[data-gonext]').forEach(b => b.addEventListener('click', () => { Snd.beep(820); goTo(cur+1); }));
+
+/* سوایپ و کیبورد */
+let tsx = 0, tsy = 0;
+ $('#deck').addEventListener('touchstart', e => {
+  tsx = e.touches[0].clientX; tsy = e.touches[0].clientY;
+}, {passive:true});
+ $('#deck').addEventListener('touchend', e => {
+  if(e.target.closest('.term-out, input, .chips')) return;
+  const dx = e.changedTouches[0].clientX - tsx;
+  const dy = e.changedTouches[0].clientY - tsy;
+  if(Math.abs(dx) > 60 && Math.abs(dy) < 55){
+    if(dx < 0 && cur < slides.length-1) goTo(cur+1);
+    else if(dx > 0 && cur > 0) goTo(cur-1);
+  }
+}, {passive:true});
+addEventListener('keydown', e => {
+  if(e.target.tagName === 'INPUT') return;
+  if(e.key === 'ArrowLeft'  && cur < slides.length-1) goTo(cur+1);
+  if(e.key === 'ArrowRight' && cur > 0) goTo(cur-1);
+});
+
+/* گلیچ دوره‌ای */
+(function glitchLoop(){
+  setTimeout(() => {
+    if(!RM && Math.random() < .7){
+      const b = $('#big');
+      if(b){ b.classList.add('glitch'); setTimeout(() => b.classList.remove('glitch'), 300); }
+    }
+    glitchLoop();
+  }, 4200 + Math.random()*3200);
+})();
+
+/* ================= شمارش معکوس ================= */
+const cd = $('#cd'), cdLabel = $('#cdLabel');
+const dgs = [...cd.querySelectorAll('.dg')];
+let lastSec = -1, ended = false;
+function target(){
+  const n = new Date();
+  if(n.getHours() >= 0 && n.getHours() < 3) return {started:true};
+  const d = new Date(); d.setHours(24,0,0,0);
+  return {at:d};
+}
+function setDigits(str){
+  dgs.forEach((el,i) => {
+    if(el.textContent !== str[i]){
+      el.textContent = str[i];
+      el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick');
+    }
+  });
+}
+function timeLeftStr(){
+  if(ended) return null;
+  const tg = target();
+  if(tg.started) return null;
+  const s = Math.floor((tg.at - Date.now())/1000);
+  if(s <= 0) return null;
+  return String(Math.floor(s/3600)).padStart(2,'0') + ':' +
+         String(Math.floor(s%3600/60)).padStart(2,'0') + ':' +
+         String(s%60).padStart(2,'0');
+}
+function onPartyStart(){
+  ended = true;
+  setDigits('000000');
+  cdLabel.textContent = 'جشنِ ۲۵۶ شروع شد — سالِ جدیدِ کدنویسی، سالم و بِذِل!';
+  cd.classList.remove('urgent');
+  toast('جشن شروع شد! بجنب بیا');
+  Snd.arp();
+  partyFor(12000);
+  burstAt(innerWidth/2, innerHeight*.4, 120);
+}
+function tick(){
+  if(!ended){
+    const tg = target();
+    if(tg.started){ onPartyStart(); return; }
+    const ms = tg.at - Date.now();
+    if(ms <= 0){ onPartyStart(); return; }
+    const s = Math.floor(ms/1000);
+    setDigits(String(Math.floor(s/3600)).padStart(2,'0') +
+              String(Math.floor(s%3600/60)).padStart(2,'0') +
+              String(s%60).padStart(2,'0'));
+    cd.classList.toggle('urgent', s <= 10);
+    if(s <= 10 && s !== lastSec && cur === 2) Snd.beep(1250);
+    lastSec = s;
+  }
+  setTimeout(tick, 250);
+}
+tick();
+
+/* ================= ثبت حضور ================= */
+const rsvpBox = $('#rsvpBox');
+function showDone(name, vip){
+  rsvpBox.innerHTML = '';
+  const sp = document.createElement('span');
+  sp.className = 'done' + (vip ? ' vip' : '');
+  sp.style.justifyContent = 'center';
+  sp.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+  sp.append(vip
+    ? ' ثبت شد: ' + name + ' — ولی ورودیِ تو ' + CONFIG.entryFee + 'ه!'
+    : 'سلامِ ' + name + ' — ثبت شد؛ می‌بینمت.');
+  rsvpBox.appendChild(sp);
+}
+function doRsvp(name){
+  const vip = isPayer(name);
+  try{ localStorage.setItem(KEY, name); }catch(e){}
+  showDone(name, vip);
+  toast(vip
+    ? 'ثبت شد — ولی یادت نره: ورودیِ تو ' + CONFIG.entryFee + 'ه!'
+    : 'ثبت شد — ساعت ۲۴:۰۰ می‌بینمت');
+  if(vip) Snd.cash(); else Snd.chime();
+  partyFor(4000);
+  burstAt(innerWidth/2, innerHeight*.5);
+  setTimeout(() => goTo(cur+1), 1900);
+}
+ $('#rsvpForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const inp = $('#rsvpName');
+  const v = inp.value.trim();
+  if(!v){
+    inp.classList.add('err');
+    inp.placeholder = 'اسمت رو بنویس تا بشناسیمت';
+    toast('اسمت خالیه!');
+    return;
+  }
+  Snd.beep(900);
+  doRsvp(v);
+});
+
+/* ================= ترمینال ================= */
+const tbody = $('#tbody'), tin = $('#cmdInput');
+let termWelcomed = false;
+const hist = []; let hi = 0;
+
+function scrollEnd(){ tbody.scrollTop = tbody.scrollHeight; }
+function print(html, cls){
+  const d = document.createElement('div');
+  d.className = 'tline ' + (cls || '');
+  d.innerHTML = html;
+  tbody.appendChild(d); scrollEnd();
+}
+function printFa(text){
+  const d = document.createElement('div');
+  d.className = 'tline fa'; d.dir = 'rtl';
+  d.textContent = text;
+  tbody.appendChild(d); scrollEnd();
+}
+function seq(lines){
+  lines.forEach((l,i) => setTimeout(() => l.fa ? printFa(l.t) : print(l.t, l.cls), 90*i));
+}
+function termWelcome(){
+  seq([
+    {t:'256-party shell v0.256 \u2014 tty1'},
+    {fa:true, t:'دکمه‌ها رو بزن، یا خودت تایپ کن.'},
+    {fa:true, t:'پیشنهادِ من: «party» — و «entry» رو هم ببین.'}
+  ]);
+}
+
+const AGENDA = [
+  ['۲۴:۰۰','شروعِ رسمی؛ فمبوی‌ها سرو می‌شن'],
+  ['۲۴:۳۰','کُدگُلف: عددِ ۲۵۶ با کمترین کاراکتر'],
+  ['۰۱:۰۰','مناظره‌ی سال: vim در برابرِ emacs'],
+  ['۰۱:۳۰','جایزه‌ی «بهانه‌ی سال» برای تأخیرِ دیلِاین'],
+  ['۰۲:۰۰','دیپلویِ خواب — این‌بار موفق']
+];
+const FILES = {
+  'fombae.txt':  [{fa:true, t:'فمبویِ داغ و تازه، با سسِ مخصوص — مهمونِ ما.'}],
+  'secret.txt': [
+    {fa:true, t:'تو واقعاً فایلِ مخفی رو باز کردی؟'},
+    {fa:true, t:'همین کنجکاویه که امشب لازمِ ماست.'}
+  ],
+  'party.sh': [
+    {t:'#!/bin/bash'},
+    {t:'while true; do'},
+    {t:'  eat fombae'},
+    {t:'  drink coffee'},
+    {t:'  write bug && call it a feature'},
+    {t:'done'}
+  ],
+  'agenda.md': AGENDA.map(a => ({fa:true, t:a[0] + ' — ' + a[1]}))
+};
+const HELP = [
+  ['help','همین لیست'],
+  ['rsvp &lt;name&gt;','ثبتِ حضور'],
+  ['time','زمانِ باقی‌مانده'],
+  ['where','مکانِ جشن'],
+  ['menu','منوی امشب'],
+  ['entry','قانونِ ورودی'],
+  ['agenda','برنامه‌ی شب'],
+  ['256','چرا ۲۵۶؟'],
+  ['whoami','تو کی هستی؟'],
+  ['ls','فایل‌ها'],
+  ['cat &lt;file&gt;','خواندنِ فایل'],
+  ['party','ببین چی می‌شه'],
+  ['sudo &lt;cmd&gt;','امتحانش کن'],
+  ['clear','پاک‌کردن']
+];
+function printHelp(){
+  HELP.forEach((h,i) => setTimeout(() => {
+    const d = document.createElement('div');
+    d.className = 'tline hl';
+    d.innerHTML = '<span class="c">' + h[0] + '</span><span class="d">' + h[1] + '</span>';
+    tbody.appendChild(d); scrollEnd();
+  }, 55*i));
+}
+function partyFx(long){
+  seq([
+    {t:'[ ok ] speakers  \u2192 unmuted'},
+    {t:'[ ok ] lights    \u2192 dimmed'},
+    {t:'[ ok ] fombae    \u2192 served'},
+    {t:'[ ok ] confetti  \u2192 deployed'},
+    {t:'[ ok ] bugs      \u2192 feature-flagged'},
+    {fa:true, t:'جشنِ ۲۵۶ روشن شد.'}
+  ]);
+  Snd.arp();
+  partyFor(long ? 10000 : 6000);
+  burstAt(innerWidth/2, innerHeight*.35);
+}
+
+function exec(c, a){
+  switch(c){
+    case 'help': printHelp(); break;
+    case 'rsvp': {
+      const nm = a.join(' ').trim();
+      if(!nm){ printFa('استفاده: rsvp <اسمت> — یا برگرد و اسمت رو تو فرمِ حضور بنویس.'); break; }
+      if(savedName()){ printFa(savedName() + ' قبلاً ثبت شده — جایِ تو امنه.'); break; }
+      doRsvp(nm);
+      printFa(isPayer(nm)
+        ? 'ثبت شد: ' + nm + ' — صندوق منتظرِ ' + CONFIG.entryFee + ' توئه.'
+        : 'ثبت شد: ' + nm + ' — می‌بینمت.');
+      break;
+    }
+    case 'time': {
+      const t = timeLeftStr();
+      t === null
+        ? printFa('جشن در جریانه — برای زمان‌سنجی دیر شد!')
+        : print('T-' + t + ' — <span style="color:var(--muted)">دیر نشه.</span>');
+      break;
+    }
+    case 'where':
+      seq([
+        {t:'location: "\u0633\u0648\u0645 \u062A\u06A9 \u0645\u0627\u0646\u0647\u0648\u0627" translation group'},
+        {fa:true, t:'همون‌جایی که همه‌ی فصل‌ها، قبل از انتشارِ رسمی خونده می‌شن.'}
+      ]);
+      break;
+    case 'menu':
+      seq([
+        {t:'fombae \u2014 hot & fresh, on us'},
+        {t:'drinks \u2014 24 cans'},
+        {fa:true, t:'coffee — بی‌نهایت، طبقِ معمول.'}
+      ]);
+      break;
+    case 'entry':
+      seq([
+        {fa:true, t:'ورودی برای همه: رایگان.'},
+        {fa:true, t:'به‌جز ' + CONFIG.payers.join('، ') + ' — اونا ' + CONFIG.entryFee + ' می‌دن. قانونه؛ اعتراض هم قبول نیست.'}
+      ]);
+      break;
+    case 'agenda': AGENDA.forEach(x => printFa(x[0] + ' — ' + x[1])); break;
+    case 'cat': {
+      const fn = (a[0] || '').toLowerCase();
+      if(!fn){ printFa('استفاده: cat <file> — ببین ls چی داره.'); break; }
+      if(FILES[fn]){ seq(FILES[fn]); break; }
+      if(fn === 'bugs/' || fn === 'coffee/'){
+        print('cat: ' + esc(fn) + ': Is a directory');
+        printFa(fn === 'coffee/' ? 'محتویاتش هنوز داغه.' : 'بهتره همین‌جوری بمونه.');
+        break;
+      }
+      print('cat: ' + esc(fn) + ': No such file');
+      printFa('همه‌چیزِ امشب مجازیه؛ ولی این یکی وجود نداره.');
+      break;
+    }
+    case '256':
+      seq([
+        {t:'2^8 = 256'},
+        {fa:true, t:'یک بایت، ۲۵۶ حالت داره — و ما با همین بایت‌ها دنیا رو ساختیم.'},
+        {fa:true, t:'به همین دلیل، روزِ برنامه‌نویس ۲۵۶اُمین روزِ ساله.'}
+      ]);
+      break;
+    case 'whoami': {
+      const nm = savedName();
+      if(nm && isPayer(nm)) printFa(nm + ' — مهمونِ ویژه… ویژه‌ی «' + CONFIG.entryFee + '»!');
+      else if(nm) printFa(nm + ' — مهمونِ ثبت‌شده، ورودیِ رایگان. منتظرتم.');
+      else printFa('یه برنامه‌نویس که داره دعوتش رو می‌خونه — پس معلومه خودته. بیا.');
+      break;
+    }
+    case 'ls': print('agenda.md  bugs/  coffee/  party.sh*  fombae.txt  secret.txt'); break;
+    case 'party': partyFx(false); break;
+    case 'sudo':
+      if((a[0]||'').toLowerCase() === 'party'){ printFa('برنامه‌نویسِ ریشه — جشن با دسترسیِ کامل:'); partyFx(true); }
+      else seq([
+        {t:'guest is not in the sudoers file. This incident will be reported.', cls:'err'},
+        {fa:true, t:'شوخی کردم — امشب همه root هستن. بفرما.'}
+      ]);
+      break;
+    case 'clear': tbody.innerHTML = ''; break;
+    case 'date': {
+      const n = new Date();
+      const doy = Math.floor((n - new Date(n.getFullYear(),0,0)) / 864e5);
+      print('day ' + doy + ' of the year');
+      printFa(doy === 256 ? 'امروز دقیقاً روزِ ۲۵۶ه — روزِ جهانیِ برنامه‌نویس.'
+                          : 'روزِ ' + doy + ' از ساله؛ ولی جشن رو امشب گرفتیم، چون حال‌مون بود.');
+      break;
+    }
+    case 'vim':   seq([{t:'vim: no mouse support.'}, {fa:true, t:'با :wq ذخیره کن و برو تو جشن.'}]); break;
+    case 'nano':  printFa('چه، vi رو یاد نگرفتی؟ اشکالی نداره — قابلمون رو همون‌جوری می‌پذیریم.'); break;
+    case 'exit':  printFa('امشب exit نداریم.'); break;
+    case '': break;
+    default:
+      print('command not found: ' + esc(c), 'err');
+      printFa('«help» رو بزن تا ببینی چه چیزهایی می‌شه.');
+  }
+}
+function runCommand(raw){
+  raw = raw.trim();
+  if(!raw) return;
+  hist.push(raw); hi = hist.length;
+  print('<span class="p">guest@256:~$</span> ' + esc(raw), 'cmd');
+  Snd.beep(760);
+  const p = raw.split(/\s+/);
+  exec(p[0].toLowerCase(), p.slice(1));
+}
+tin.addEventListener('keydown', e => {
+  if(e.key === 'Enter'){ runCommand(tin.value); tin.value = ''; }
+  else if(e.key === 'ArrowUp'){ e.preventDefault(); if(hi > 0) tin.value = hist[--hi] || ''; }
+  else if(e.key === 'ArrowDown'){ e.preventDefault(); if(hi < hist.length) tin.value = hist[++hi] || ''; }
+});
+ $('#runBtn').addEventListener('click', () => { runCommand(tin.value); tin.value = ''; tin.focus(); });
+tbody.addEventListener('click', () => { if(!$('#termRow').hidden) tin.focus({preventScroll:true}); });
+
+/* چیپ‌های لمسی */
+const CHIP_CMDS = ['party','256','entry','cat secret.txt','sudo party','where','menu','agenda','whoami','date','help','clear'];
+const chipsEl = $('#chips');
+CHIP_CMDS.forEach(cmd => {
+  const b = document.createElement('button');
+  b.className = 'chip';
+  b.textContent = cmd;
+  b.addEventListener('click', () => {
+    Snd.beep(760);
+    if(cmd === 'clear') tbody.innerHTML = '';
+    runCommand(cmd);
+  });
+  chipsEl.appendChild(b);
+});
+/* چیپ rsvp (برمی‌گرده به فرم) */
+(function(){
+  const b = document.createElement('button');
+  b.className = 'chip';
+  b.textContent = 'rsvp';
+  b.addEventListener('click', () => {
+    Snd.beep(880);
+    if(savedName()) toast(savedName() + '، قبلاً ثبت کردی — جایِ تو امنه.');
+    else goTo(4);
+  });
+  chipsEl.appendChild(b);
+})();
+/* چیپ کیبورد */
+(function(){
+  const b = document.createElement('button');
+  b.className = 'chip alt';
+  b.textContent = 'تایپ با کیبورد';
+  b.addEventListener('click', () => {
+    Snd.beep(700);
+    const row = $('#termRow');
+    row.hidden = !row.hidden;
+    if(!row.hidden) setTimeout(() => tin.focus(), 60);
+  });
+  chipsEl.appendChild(b);
+})();
+
+/* ================= اشتراک‌گذاری ================= */
+ $('#shareBtn').addEventListener('click', async () => {
+  Snd.beep(880);
+  const url = location.href;
+  if(navigator.share){
+    try{
+      await navigator.share({ title: CONFIG.shareTitle, text: CONFIG.shareText, url });
+      toast('مرسی که فرستادی!');
+    }catch(e){ /* کاربر لغو کرد */ }
+  }else{
+    try{
+      await navigator.clipboard.writeText(CONFIG.shareText + ' ' + url);
+      toast('لینک کپی شد — بفرستش برای بقیه');
+    }catch(e){
+      toast(url);
+    }
+  }
+});
+</script>
+</body>
+</html>
